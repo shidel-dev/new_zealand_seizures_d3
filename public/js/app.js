@@ -1,7 +1,11 @@
 d3.csv("nz_seizure_incidents_data.csv", function(totals) {
+  displayByDevice(combinePortInfo(totals)["cellphone"])
+  console.log(totals)
+  collapseAllDevices(combinePortInfo(totals));
+});
 
+function displayByDevice(totals){
   var uniqueGoods = extractUniqueGoods(totals)
-  console.log(uniqueGoods)
   var diameter = 960,
     format = d3.format(",d"),
     color = d3.scale.category20c();
@@ -23,35 +27,34 @@ d3.csv("nz_seizure_incidents_data.csv", function(totals) {
     .attr("class", "node")
     .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
 
-  node.append("text")
-    .attr("dy", ".3em")
-    .style("text-anchor", "middle")
-    .text(function (t) { return t["Description of Goods"]  })
-
   node.append("circle")
     .attr("r", function(t) { return t.r })
     .style("fill", function(d) {return deviceToColor(d["Description of Goods"])});
 
+  node.append("text")
+    .attr("dy", ".3em")
+    .style("text-anchor", "middle")
+    .text(function (t) { return t["Description of Goods"]  });
+
     d3.select(self.frameElement).style("height", diameter + "px");
     combinePortInfo(totals)
-});
+}
+
+
 
 function extractUniqueGoods(totals){
   var set = {}
   _.each(totals, function(item){
     set[item["Description of Goods"]] = true;
   });
-
   return  _.keys(set)
-
 }
 
 function combinePortInfo(portIncidents) {
-  _.groupBy(portIncidents, function(item){
+ return  _.groupBy(portIncidents, function(item){
     return deviceToCategory(item["Description of Goods"])
-  }))
+  })
 }
-
 
 function deviceToColor(device){
   return colorsToCategories[deviceToCategory(device)]
@@ -59,6 +62,20 @@ function deviceToColor(device){
 
 function deviceToCategory(device){
  return descriptionsToCategories[device]
+}
+
+function collapseAllDevices(grouping) {
+  var group = _.map(grouping, function(category, key) {
+    var total = 0
+
+    _.each(category, function(event) {
+      total += parseInt(event["value"])
+    });
+    var object = {}
+    object[key] = total;
+    return object
+  });
+  console.log(group)
 }
 
 
