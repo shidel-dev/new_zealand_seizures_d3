@@ -1,15 +1,15 @@
 d3.csv("nz_seizure_incidents_data.csv", function(totals) {
-  document.getElementById("device-overview").addEventListener("click", function() {
-    makeBubbleChart(totals, function(d) {return colorsToCategories[descriptionsToCategories[d["Description of Goods"]]]});
-  });
   document.getElementById("device-detail").addEventListener("click", function() {
+    makeBubbleChart(combinePortIncidents(totals), function(d) {return colorsToCategories[descriptionsToCategories[d["Description of Goods"]]]});
+  });
+  document.getElementById("device-overview").addEventListener("click", function() {
     makeBubbleChart(collapseAllDevices(combinePortInfo(totals)),function(d) {return colorsToCategories[d["Description of Goods"]]});
   });
   // makeBubbleChart(totals, function(d) {return colorsToCategories[descriptionsToCategories[d["Description of Goods"]]]});
   // console.log(totals);
   // makeBubbleChart(collapseAllDevices(combinePortInfo(totals)),function(d) {return colorsToCategories[d["Description of Goods"]]});
   // makeBubbleChart(collapseAllDevices(combinePortInfo(totals)));
-  // collapseAllDevices(combinePortInfo(totals));
+
 });
 
 function makeBubbleChart(totals, colorFunction){
@@ -46,7 +46,6 @@ function makeBubbleChart(totals, colorFunction){
     .text(function (t) { return t["Description of Goods"]  });
 
     d3.select(self.frameElement).style("height", diameter + "px");
-    combinePortInfo(totals)
 }
 
 
@@ -86,6 +85,14 @@ function collapseAllDevices(grouping) {
     return object
   });
   return group
+}
+
+function combinePortIncidents(incidents){
+  console.log(incidents);
+  var incidentsGrouping = _.groupBy(incidents, function(item) {
+    return item["Description of Goods"];
+  });
+  return collapseAllDevices(incidentsGrouping);
 }
 
 
