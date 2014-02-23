@@ -1,11 +1,13 @@
 d3.csv("nz_seizure_incidents_data.csv", function(totals) {
-  displayByDevice(combinePortInfo(totals)["cellphone"])
-  console.log(totals)
+  // makeBubbleChart(totals, function(d) {return colorsToCategories[descriptionsToCategories[d["Description of Goods"]]]});
+  // console.log(totals);
+  makeBubbleChart(collapseAllDevices(combinePortInfo(totals)),function(d) {return colorsToCategories[d["Description of Goods"]]});
+  // makeBubbleChart(collapseAllDevices(combinePortInfo(totals)));
   collapseAllDevices(combinePortInfo(totals));
 });
 
-function displayByDevice(totals){
-  var uniqueGoods = extractUniqueGoods(totals)
+function makeBubbleChart(totals, colorFunction){
+  // var uniqueGoods = extractUniqueGoods(totals)
   var diameter = 960,
     format = d3.format(",d"),
     color = d3.scale.category20c();
@@ -29,7 +31,7 @@ function displayByDevice(totals){
 
   node.append("circle")
     .attr("r", function(t) { return t.r })
-    .style("fill", function(d) {return deviceToColor(d["Description of Goods"])});
+    .style("fill", colorFunction);
 
   node.append("text")
     .attr("dy", ".3em")
@@ -56,7 +58,7 @@ function combinePortInfo(portIncidents) {
   })
 }
 
-function deviceToColor(device){
+function categoryToColor(device){
   return colorsToCategories[deviceToCategory(device)]
 }
 
@@ -72,10 +74,11 @@ function collapseAllDevices(grouping) {
       total += parseInt(event["value"])
     });
     var object = {}
-    object[key] = total;
+    object["Description of Goods"] = key;
+    object["value"] = total;
     return object
   });
-  console.log(group)
+  return group
 }
 
 
