@@ -36,19 +36,40 @@ function makeBubbleChart(totals, colorFunction){
     .attr("class", "node")
     .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
 
-  node.append("circle")
+  var circle = node.append("circle")
     .attr("r", function(t) { return t.r })
     .style("fill", colorFunction);
 
-  node.append("text")
+  var circleLabel = node.append("text")
     .attr("dy", ".3em")
     .style("text-anchor", "middle")
     .text(function (t) { return t["Description of Goods"]  });
 
+  $('g circle').each(function(i, circle) {
+    var $text = $(circle).siblings("text");
+    if ($(circle).attr('r') * 2 < $text.width()) {
+      $text.hide();
+      $(circle).parent().hover(function (event) {
+        $(this).children("text").show();
+      }, function (event) {
+        $(this).children("text").hide();
+      });
+    }
+  });
+  // $('g circle').each(hideLongName);
+
+
     d3.select(self.frameElement).style("height", diameter + "px");
 }
 
-
+function radiusTextWorthiness(text,circle) {
+  t = text
+  c = circle
+  console.log(circle);
+  if (text.clientWidth > circle.clientWidth){
+      circleLabel[i].remove();
+  }
+}
 
 function extractUniqueGoods(totals){
   var set = {}
