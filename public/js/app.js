@@ -1,10 +1,14 @@
 d3.csv("nz_seizure_incidents_data.csv", function(totals) {
   document.getElementById("device-detail").addEventListener("click", function() {
-    makeBubbleChart(combinePortIncidents(totals), function(d) {return colorsToCategories[descriptionsToCategories[d["Description of Goods"]]]});
+    makeBubbleChart(combinePortIncidents(totals), 960, function(d) {return colorsToCategories[descriptionsToCategories[d["Description of Goods"]]]});
   });
   document.getElementById("device-overview").addEventListener("click", function() {
-    makeBubbleChart(collapseAllDevices(combinePortInfo(totals)),function(d) {return colorsToCategories[d["Description of Goods"]]});
+    makeBubbleChart(collapseAllDevices(combinePortInfo(totals)), 960, function(d) {return colorsToCategories[d["Description of Goods"]]});
   });
+  document.getElementById("device-monthly").addEventListener("click", function() {
+    monthView(totals);
+  });
+
   // makeBubbleChart(totals, function(d) {return colorsToCategories[descriptionsToCategories[d["Description of Goods"]]]});
   // console.log(totals);
   // makeBubbleChart(collapseAllDevices(combinePortInfo(totals)),function(d) {return colorsToCategories[d["Description of Goods"]]});
@@ -12,17 +16,17 @@ d3.csv("nz_seizure_incidents_data.csv", function(totals) {
 
 });
 
-function makeBubbleChart(totals, colorFunction){
+function makeBubbleChart(totals, viewportSize, colorFunction){
   // var uniqueGoods = extractUniqueGoods(totals)
-  var diameter = 960,
+  var diameter = viewportSize,
     format = d3.format(",d"),
     color = d3.scale.category20c();
 
   var bubble = d3.layout.pack()
     .sort(null)
     .size([diameter, diameter]).padding(0)
-  var svgElement = document.getElementsByTagName("svg")[0]
-  if (svgElement) svgElement.remove()
+  // var svgElement = document.getElementsByTagName("svg")[0]
+  // if (svgElement) svgElement.remove()
   var svg = d3.select("body").append("svg")
     .attr("width", diameter)
     .attr("height", diameter)
@@ -50,13 +54,12 @@ function makeBubbleChart(totals, colorFunction){
     if ($(circle).attr('r') * 2 < $text.width()) {
       $text.hide();
       $(circle).parent().hover(function (event) {
-        $(this).children("text").show();
+        $(this).children("text").show().css('z-index',3);
       }, function (event) {
         $(this).children("text").hide();
       });
     }
   });
-  // $('g circle').each(hideLongName);
 
 
     d3.select(self.frameElement).style("height", diameter + "px");
@@ -109,13 +112,20 @@ function collapseAllDevices(grouping) {
 }
 
 function combinePortIncidents(incidents){
-  console.log(incidents);
   var incidentsGrouping = _.groupBy(incidents, function(item) {
     return item["Description of Goods"];
   });
   return collapseAllDevices(incidentsGrouping);
 }
 
+function monthView(incidents){
+  var months = _.groupBy(incidents, function(item) {
+    return item["Month"];
+  });
+  _.each(months, function(monthIncidents) {
+    makeBubbleChart(collapseAllDevices(combinePortInfo(monthIncidents)), 200, function(d) {return colorsToCategories[d["Description of Goods"]]});
+  });
+}
 
 var colorsToCategories = {"computer": "11A7FC",
 "cellphone": "95D127",
