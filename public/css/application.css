@@ -1,9 +1,25 @@
-.container {
-  margin: 20px auto;
-  width: 600px;
-  padding: 0px 20px 20px 20px;
-  border: 1px dotted black;
+
+#nav{
+	position: fixed;
+	height: 48px;
+	width: 100%;
+	left: 0;
+	top: 0;
+	color: #FFF;
+	background-color: #000;
+	font-family: sans-serif;
+	font-size: 20px;
 }
-th {
-  text-align: left;
+
+#nav > span {
+height: 58px;
+line-height: 48px;
+margin-left: 42px;
+cursor: pointer;
+}
+
+#container{
+	width:960px;
+	margin:auto;
+	margin-top: 48px;
 }
