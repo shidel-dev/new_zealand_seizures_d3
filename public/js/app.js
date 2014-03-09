@@ -1,11 +1,11 @@
 d3.csv("nz_seizure_incidents_data.csv", function(totals) {
   document.getElementById("device-detail").addEventListener("click", function() {
     $("#container").empty() 
-    makeBubbleChart(combinePortIncidents(totals), 960, function(d) {return colorsToCategories[descriptionsToCategories[d["Description of Goods"]]]});
+    makeBubbleChart(combinePortIncidents(totals), 900, function(d) {return colorsToCategories[descriptionsToCategories[d["Description of Goods"]]]});
   });
   document.getElementById("device-overview").addEventListener("click", function() {
     $("#container").empty() 
-    makeBubbleChart(collapseAllDevices(combinePortInfo(totals)), 960, function(d) {return colorsToCategories[d["Description of Goods"]]});
+    makeBubbleChart(collapseAllDevices(combinePortInfo(totals)), 900, function(d) {return colorsToCategories[d["Description of Goods"]]});
   });
   document.getElementById("device-monthly").addEventListener("click", function() {
     $("#container").empty();
@@ -15,8 +15,8 @@ d3.csv("nz_seizure_incidents_data.csv", function(totals) {
 
 function makeBubbleChart(totals, viewportSize, colorFunction){
   var diameter = viewportSize,
-    format = d3.format(",d"),
-    color = d3.scale.category20c();
+      format = d3.format(",d"),
+      color = d3.scale.category20c();
 
   var bubble = d3.layout.pack()
     .sort(null)
