@@ -1,33 +1,27 @@
 d3.csv("nz_seizure_incidents_data.csv", function(totals) {
   document.getElementById("device-detail").addEventListener("click", function() {
+    $("#container").empty() 
     makeBubbleChart(combinePortIncidents(totals), 960, function(d) {return colorsToCategories[descriptionsToCategories[d["Description of Goods"]]]});
   });
   document.getElementById("device-overview").addEventListener("click", function() {
+    $("#container").empty() 
     makeBubbleChart(collapseAllDevices(combinePortInfo(totals)), 960, function(d) {return colorsToCategories[d["Description of Goods"]]});
   });
   document.getElementById("device-monthly").addEventListener("click", function() {
+    $("#container").empty();
     monthView(totals);
   });
-
-  // makeBubbleChart(totals, function(d) {return colorsToCategories[descriptionsToCategories[d["Description of Goods"]]]});
-  // console.log(totals);
-  // makeBubbleChart(collapseAllDevices(combinePortInfo(totals)),function(d) {return colorsToCategories[d["Description of Goods"]]});
-  // makeBubbleChart(collapseAllDevices(combinePortInfo(totals)));
-
 });
 
 function makeBubbleChart(totals, viewportSize, colorFunction){
-  // var uniqueGoods = extractUniqueGoods(totals)
   var diameter = viewportSize,
     format = d3.format(",d"),
     color = d3.scale.category20c();
 
   var bubble = d3.layout.pack()
     .sort(null)
-    .size([diameter, diameter]).padding(0)
-  // var svgElement = document.getElementsByTagName("svg")[0]
-  // if (svgElement) svgElement.remove()
-  var svg = d3.select("body").append("svg")
+    .size([diameter, diameter]).padding(0) 
+  var svg = d3.select("#container").append("svg")
     .attr("width", diameter)
     .attr("height", diameter)
     .attr("class", "bubble");
@@ -60,8 +54,6 @@ function makeBubbleChart(totals, viewportSize, colorFunction){
       });
     }
   });
-
-
     d3.select(self.frameElement).style("height", diameter + "px");
 }
 
