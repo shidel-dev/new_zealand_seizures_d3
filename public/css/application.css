@@ -23,3 +23,9 @@ cursor: pointer;
 	margin:auto;
 	margin-top: 48px;
 }
+
+#container > span {
+	position: relative;
+	top: -181px;
+	left: 7px;
+}
