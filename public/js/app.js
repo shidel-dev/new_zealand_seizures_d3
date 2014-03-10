@@ -1,15 +1,18 @@
-d3.csv("nz_seizure_incidents_data.csv", function(totals) {
-  document.getElementById("device-detail").addEventListener("click", function() {
-    $("#container").empty() 
-    makeBubbleChart(combinePortIncidents(totals), 900, function(d) {return colorsToCategories[descriptionsToCategories[d["Description of Goods"]]]});
-  });
-  document.getElementById("device-overview").addEventListener("click", function() {
-    $("#container").empty() 
-    makeBubbleChart(collapseAllDevices(combinePortInfo(totals)), 900, function(d) {return colorsToCategories[d["Description of Goods"]]});
-  });
-  document.getElementById("device-monthly").addEventListener("click", function() {
-    $("#container").empty();
-    monthView(totals);
+
+$(function(){
+  d3.csv("nz_seizure_incidents_data.csv", function(totals) {
+    document.getElementById("device-detail").addEventListener("click", function() {
+      $("#container").empty() 
+      makeBubbleChart(combinePortIncidents(totals), 900, function(d) {return colorsToCategories[descriptionsToCategories[d["Description of Goods"]]]});
+    });
+    document.getElementById("device-overview").addEventListener("click", function() {
+      $("#container").empty() 
+      makeBubbleChart(collapseAllDevices(combinePortInfo(totals)), 900, function(d) {return colorsToCategories[d["Description of Goods"]]});
+    });
+    document.getElementById("device-monthly").addEventListener("click", function() {
+      $("#container").empty();
+      monthView(totals);
+    });
   });
 });
 
@@ -111,11 +114,13 @@ function combinePortIncidents(incidents){
 }
 
 function monthView(incidents){
+  console.log(incidents)
   var months = _.groupBy(incidents, function(item) {
     return item["Month"];
   });
-  _.each(months, function(monthIncidents) {
-    makeBubbleChart(collapseAllDevices(combinePortInfo(monthIncidents)), 200, function(d) {return colorsToCategories[d["Description of Goods"]]});
+  _.each(months, function(monthIncidents,monthName) {
+    makeBubbleChart(collapseAllDevices(combinePortInfo(monthIncidents)), 270, function(d) {return colorsToCategories[d["Description of Goods"]]})
+    $("#container > svg:last-child").before("<span>"+monthName+"</span>")
   });
 }
 
