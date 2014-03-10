@@ -13,6 +13,7 @@ $(function(){
       $("#container").empty();
       monthView(totals);
     });
+    monthView(totals);
   });
 });
 
